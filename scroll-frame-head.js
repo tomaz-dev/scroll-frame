@@ -26,12 +26,10 @@
   // Hitting the back button will halt when it gets to the popstate point
   // at which scrollFrame added the iframe modal. This will notice that and
   // make the full refresh instead.
-  var firstPopStateTriggered;
   addEventListener('popstate', function(e) {
-    if (firstPopStateTriggered && e.state && e.state.scrollFrame &&
-        !document.querySelector('.scroll-frame-iframe')) {
-      location = e.state.href;
+    if(e && e.state && e.state.scrollFramesParentDocument && !document.querySelector('.scroll-frame-iframe')) {
+      //back button when target website was refreshed in browser by clicking refresh button and parent website is no longer in DOM
+      location.reload();
     }
-    firstPopStateTriggered = true;
   });
 })();

@@ -36,11 +36,11 @@
   // @param {String} url
 
   var openIframe = function(url) {
-    var prevHref = location.href;
-    var prevTitle = document.title;
-
     // Change the history
-    history.pushState({ scrollFrame: true, href: location.href }, '', url);
+    if(location.href != url) {  //when opening from popstate event (on back and forward, state is already handled from before)
+      history.replaceState({scrollFramesParentDocument: true, parentHref: location.href }, document.title, location.href);
+      history.pushState({ scrollFrame: true, parentHref: location.href }, '', url);
+    }
 
     // Create the wrapper & iframe modal
     var html = document.getElementsByTagName('html')[0];
@@ -81,21 +81,26 @@
     wrapper.appendChild(iframe);
     body.appendChild(wrapper);
     iframe.contentWindow.location.replace(url);
+  }
 
-    // On back-button remove the wrapper
-    var onPopState = function(e) {
-      if (location.href != prevHref) return;
-      wrapper.removeChild(iframe);
-      document.title = prevTitle;
-      body.removeChild(wrapper);
+  // Handling back and forward button
+  var onPopState = function(e) {
+    if(e && e.state && e.state.scrollFramesParentDocument && document.querySelector('.scroll-frame-iframe')) {
+      //back button (when parent website is still in DOM)
+      document.querySelector('.scroll-frame-iframe').parentElement.outerHTML='';
+      var html = document.getElementsByTagName('html')[0];
+      var body = document.getElementsByTagName('body')[0];
       body.setAttribute('style',
         body.getAttribute('style').replace('overflow: hidden;', ''));
       html.setAttribute('style',
         html.getAttribute('style').replace('overflow: hidden;', ''));
-      removeEventListener('popstate', onPopState);
+    } else if(e && e.state && e.state.scrollFrame) {
+      //forward button
+      openIframe(location.href);
     }
-    addEventListener('popstate', onPopState);
   }
+  addEventListener('popstate', onPopState);
+
 
   // To keep iframes from stacking up inside of each other and potentially
   // getting into a very messy state we'll use messaging b/t iframes to
@@ -106,9 +111,7 @@
     addEventListener('message', function(e) {
       if (!e.data.href) return;
       if (!e.data.scrollFrame == true) return;
-      if (e.data.href == this.location.href) return;
-      var body = document.getElementsByTagName('body')[0];
-      var html = document.getElementsByTagName('html')[0];
+      if (e.data.href == this.location.href) return;    /* loadede frame vs main document */
       this.location.assign(e.data.href);
     });
   }
