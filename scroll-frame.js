@@ -23,7 +23,7 @@
       if (!elMatchesSelector) return;
 
       // Get the href & open the iframe on that url
-      var href = e.target.href || e.target.parentNode.href;
+      var href = e.target.href || e.target.closest('a').href;
       if (href) {
         e.preventDefault();
         openIframe(href);
