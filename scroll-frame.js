@@ -43,6 +43,7 @@
     history.pushState({ scrollFrame: true, href: location.href }, '', url);
 
     // Create the wrapper & iframe modal
+    var html = document.getElementsByTagName('html')[0];
     var body = document.getElementsByTagName('body')[0];
     var iOS = navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false;
     var attributes = [
@@ -68,6 +69,8 @@
     // Lock the body from scrolling & hide the body's scroll bars.
     body.setAttribute('style', 'overflow: hidden;' +
       (body.getAttribute('style') || ''));
+    html.setAttribute('style', 'overflow: hidden;' +
+      (html.getAttribute('style') || ''));
 
     // Add a class to the body while the iframe loads then append it
     body.className += ' scroll-frame-loading';
@@ -87,6 +90,8 @@
       body.removeChild(wrapper);
       body.setAttribute('style',
         body.getAttribute('style').replace('overflow: hidden;', ''));
+      html.setAttribute('style',
+        html.getAttribute('style').replace('overflow: hidden;', ''));
       removeEventListener('popstate', onPopState);
     }
     addEventListener('popstate', onPopState);
