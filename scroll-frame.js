@@ -60,16 +60,16 @@
     var wrapper = document.createElement("div");
     wrapper.setAttribute('style',attributes.join(';'));
     var iframe = document.createElement("iframe");
-    iframe.className = 'scroll-frame-iframe'
+    iframe.className = 'scroll-frame-iframe';
     iframe.setAttribute('style', [
       'width: 100%', 'height: 100%', 'position:absolute',
       'border: 0'
     ].join(';'));
 
     // Lock the body from scrolling & hide the body's scroll bars.
-    body.setAttribute('style', 'overflow: hidden;' +
+    body.setAttribute('style', 'overflow: hidden; position: fixed; top: 0; left: 0; width: 100%; height: 100%;' +
       (body.getAttribute('style') || ''));
-    html.setAttribute('style', 'overflow: hidden;' +
+    html.setAttribute('style', 'overflow: hidden; position: fixed; top: 0; left: 0; width: 100%; height: 100%;' +
       (html.getAttribute('style') || ''));
 
     // Add a class to the body while the iframe loads then append it
@@ -91,9 +91,9 @@
       var html = document.getElementsByTagName('html')[0];
       var body = document.getElementsByTagName('body')[0];
       body.setAttribute('style',
-        body.getAttribute('style').replace('overflow: hidden;', ''));
+        body.getAttribute('style').replace('overflow: hidden; position: fixed; top: 0; left: 0; width: 100%; height: 100%', ''));
       html.setAttribute('style',
-        html.getAttribute('style').replace('overflow: hidden;', ''));
+        html.getAttribute('style').replace('overflow: hidden; position: fixed; top: 0; left: 0; width: 100%; height: 100%', ''));
     } else if(e && e.state && e.state.scrollFrame) {
       //forward button
       openIframe(location.href);
