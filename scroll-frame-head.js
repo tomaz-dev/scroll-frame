@@ -22,6 +22,22 @@
     }
   }
 
+  // If we are inside frame... we do not want that future links to navigate inside iframe, but to target back to parent window...
+  if(window && window.frameElement && window.frameElement.className == 'scroll-frame-iframe') {
+    window.addEventListener("DOMContentLoaded", function() {
+      // do stuff
+      var links = document.getElementsByTagName("a");
+      for(var i in links) if(!links[i].target || links[i].target.toLowerCase() == '_self') {
+        links[i].target = '_parent';
+      }
+
+      var forms = document.getElementsByTagName("form");
+      for(var i in forms) if(!forms[i].target || forms[i].target.toLowerCase() == '_self') {
+        forms[i].target = '_parent';
+      }
+    }, false);
+  }
+
   // When navigating another level deep scrollFrame will refresh the page.
   // Hitting the back button will halt when it gets to the popstate point
   // at which scrollFrame added the iframe modal. This will notice that and
